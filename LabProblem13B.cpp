@@ -16,19 +16,26 @@ using namespace std;
 //prototypes
 bool isLeapYear(int year);
 int daysInMonth(int month, int year);
+int dayOfWeek(int month, int day, int year);
 
 const string MONTHS[] = { "January", "February", "March", "April", "May", "June", "July", "August",
 							"September", "October", "November", "December" };
+
+const string DAY_NAME[] = { "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
+
+
 int main(void) {
 	int year;
 	int month;
+	int day;
 	while (true) {
-		cout << "Enter a month or Q to quit: ";
+		cout << "Enter a date or Q to quit: ";
 		cin >> month;
+		cin >> day;
 		cin >> year;
 		if (cin.fail())
 			break;
-		cout << MONTHS[month - 1] << ' ' << year << " has " << daysInMonth(month, year) << " days.\n";
+		cout << DAY_NAME[dayOfWeek(month, day, year)] << ", " << MONTHS[month - 1] << " " << day << ", " << year << endl;
 	}
 }
 
@@ -66,4 +73,16 @@ int daysInMonth(int month, int year) {
 		return NULL;
 		break;
 	}
+}
+
+int dayOfWeek(int month, int day, int year) {
+	if (month <= 2) {
+		year--;
+		month += 12;
+	}
+
+	int dayOfTheWeek = (day + (((month + 1) * 26) / 10) + year + (year / 4) + 6 * (year / 100) + (year / 400));
+
+	return dayOfTheWeek % 7;
+
 }
