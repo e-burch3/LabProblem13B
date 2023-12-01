@@ -18,16 +18,16 @@ bool isLeapYear(int year);
 int daysInMonth(int month, int year);
 int dayOfWeek(int month, int day, int year);
 void printCalendar(int month, int year);
+int monthFinder(string month);
 
-
-const string MONTHS[] = { "January", "February", "March", "April", "May", "June", "July", "August",
+const string MONTHS[] = {"January", "February", "March", "April", "May", "June", "July", "August",
 							"September", "October", "November", "December" };
 
 const string DAY_NAME[] = { "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
 //					   Sa Fr Th We Tu Mo Su
 //					   00 01 02 03 04 05 06 07 08 09 10 11 12
 //					   01234567890123456789012345678901234567
-char calendar[][40] ={"                   1  2  3  4  5  6  7 ",
+string calendar[] =  {"                   1  2  3  4  5  6  7 ",
 					  " 2  3  4  5  6  7  8  9 10 11 12 13 14 ",
 					  " 9 10 11 12 13 14 15 16 17 18 19 20 21 ",
 					  "16 17 18 19 20 21 22 23 24 25 26 27 28 ",
@@ -38,19 +38,19 @@ string week[] = { "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" };
 
 int main(void) {
 	int year;
-	int month;
-	int count = 0;
-	
-	
+	string month;
+	int months;
+
 	while (true) {
 		cout << "Enter a month and year or Q to quit: ";
 		cin >> month;
 		
 		cin >> year;
+		months = monthFinder(month);
 		if (cin.fail())
 			break;
 
-		printCalendar(month, year);
+		printCalendar(months, year);
 	}
 }
 
@@ -101,55 +101,113 @@ int dayOfWeek(int month, int day, int year) {
 	return dayOfTheWeek % 7;
 
 }
+int monthFinder(string month) {
+	
+	if (month[0] >= 97 && month[0] <= 122) {
+		month[0] = month[0] - 32;
+	}
+
+	for (int i = 0; i < 12; i++)
+		for(int j = 0; j < 10; j++)
+			if (month == MONTHS[i])
+				return i + 1;
+				
+	return 0;
+}
 
 void printCalendar(int month, int year) {
-	// char lines[6][40];
+	string line1, line2, line3, line4, line5, line6;
+	string str = MONTHS[month - 1];
 	int firstDay = dayOfWeek(month, 1, year);
-	int offset;
-	int lastPoint;
+	int offset = 0;
+	int lastPoint = 0;
 	int lastDay = daysInMonth(month, year);
 	char lastDayFirst = (lastDay / 10) + 48;
 	char lastDaySecond = (lastDay % 10) + 48;
-	char last;
-
-	firstDay *= 3;
+	char last = 0;
+	char curr = 0;
 
 	
+	switch (firstDay) {
+	case 0: // SATURDAY
+		firstDay = 0;
+		break;
+	case 1://SUNDAY
+		firstDay = 18;
+		break;
+	case 2: //MONDAY
+		firstDay = 15;
+		break;
+	case 3: // TUESDAY
+		firstDay = 12;
+		break;
+	case 4: // WEDNESDAY
+		firstDay = 9;
+		break;
+	case 5: //THURSDAY
+		firstDay = 6;
+		break;
+	case 6: // FRIDAY
+		firstDay = 3;
+		break;
+	}
+	
+	
+	
+	lastPoint = 38;
+
+	printf("%s", str.c_str());
+
+	printf(" %i", year);
+	printf("\n");
+	printf("Su Mo Tu We Th Fr Sa\n");
+	
 	for (int j = 0; j <= 6; j++) {
-		cout << endl;
-		if (j >= 0 && j <= 3) {
-			for (int i = firstDay-3; i <= lastPoint; i++) {
-				if (i == 39) 
-					break;
-				//lines[j][i - firstDay] = calendar[j][i];
-				//cout << lines[j][i - firstDay];
-				cout << calendar[j][i];
+		if (j == 0) {
+			for (int i = firstDay; i <= lastPoint; i++) {
+				line1 += calendar[j][i];
+				
+			}
+		}
+		else if (j == 1) {
+			for (int i = firstDay; i <= lastPoint; i++) {
+				line2 += calendar[j][i];
+			}
+		}
+		else if (j == 2) {
+			for (int i = firstDay; i <= lastPoint; i++) {
+				line3 += calendar[j][i];
+			}
+		}
+		else if (j == 3) {
+			for (int i = firstDay ; i <= lastPoint; i++) {
+				line4 += calendar[j][i];
 			}
 		}
 		else if (j == 4) {
-			for (int i = firstDay-3; i <= lastPoint; i++) {
-				if (i == 39)
-					break;
-				//lines[j][i - firstDay] = calendar[j][i];
-				//cout << lines[j][i - firstDay];
-				cout << calendar[j][i];
+			for (int i = firstDay ; i <= lastPoint; i++) {
+				line5 += calendar[j][i];
 				if (calendar[j][i] == lastDaySecond && last == lastDayFirst && last != ' ')
 					break;
 				last = calendar[j][i];
 			}
 		}
 		else if (j == 5 && firstDay <= 16) {
-			for (int i = firstDay-3; i <= lastPoint; i++) {
-				if (i == 39)
-					break;
-				//lines[j][i - firstDay] = calendar[j][i];
-				//cout << lines[j][i - firstDay];
-				cout << calendar[j][i];
+			for (int i = firstDay; i <= lastPoint; i++) {
+				line6 += calendar[j][i];
 				if (calendar[j][i] == lastDaySecond && last == lastDayFirst && last != ' ')
 					break;
 				last = calendar[j][i];
 			}
 		}
 	}
+	
+	printf("%-.21s\n", line1.c_str());
+	printf("%-.21s\n", line2.c_str());
+	printf("%-.21s\n", line3.c_str());
+	printf("%-.21s\n", line4.c_str());
+	printf("%-.21s\n", line5.c_str());
+	printf("%-.21s\n", line6.c_str());
+
 }
 
