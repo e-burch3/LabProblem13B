@@ -114,8 +114,6 @@ void printCalendar(int month, int year) {
 
 	firstDay *= 3;
 
-	offset = 19 - firstDay;
-	lastPoint = offset + 21;
 	
 	for (int j = 0; j <= 6; j++) {
 		cout << endl;
