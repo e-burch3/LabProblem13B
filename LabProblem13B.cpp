@@ -9,9 +9,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 
 using namespace std;
-
 
 //prototypes
 bool isLeapYear(int year);
@@ -19,6 +19,7 @@ int daysInMonth(int month, int year);
 int dayOfWeek(int month, int day, int year);
 void printCalendar(int month, int year);
 int monthFinder(string month);
+void output(string filename, int month, int year);
 
 const string MONTHS[] = {"January", "February", "March", "April", "May", "June", "July", "August",
 							"September", "October", "November", "December" };
@@ -36,19 +37,24 @@ string calendar[] =  {"                   1  2  3  4  5  6  7 ",
 
 string week[] = { "Su", "Mo", "Tu", "We", "Th", "Fr", "Sa" };
 
+string line1, line2, line3, line4, line5, line6;
+
+string file;
+
 int main(void) {
 	int year;
 	string month;
 	int months;
-
+	
 	while (true) {
 		cout << "Enter a month and year or Q to quit: ";
 		cin >> month;
-		
 		cin >> year;
-		months = monthFinder(month);
-		if (cin.fail())
+		if (month == "Q" || cin.fail())
 			break;
+		cout << "Enter file to output to: ";
+		cin >> file;
+		months = monthFinder(month);
 
 		printCalendar(months, year);
 	}
@@ -111,12 +117,55 @@ int monthFinder(string month) {
 		for(int j = 0; j < 10; j++)
 			if (month == MONTHS[i])
 				return i + 1;
-				
 	return 0;
 }
 
+void output(string filename, int month, int year) {
+	ofstream outFile;
+	outFile.open(filename);
+	string str = MONTHS[month - 1];
+
+	if (outFile.fail()) {
+		printf("Error opening File. ");
+	}
+	else {
+		for (int i = 21; i < line1.length(); i++) {
+			line1[i] = ' ';
+		}
+		for (int i = 21; i < line2.length(); i++) {
+			line2[i] = ' ';
+		}
+		for (int i = 21; i < line3.length(); i++) {
+			line3[i] = ' ';
+		}
+		for (int i = 21; i < line4.length(); i++) {
+			line4[i] = ' ';
+		}
+		for (int i = 21; i < line5.length(); i++) {
+			line5[i] = ' ';
+		}
+		for (int i = 21; i < line6.length(); i++) {
+			line6[i] = ' ';
+		}
+		outFile << str << " " << year << endl;
+		outFile << "Su Mo Tu We Th Fr Sa\n";
+		outFile << line1 << endl;
+		outFile << line2 << endl;
+		outFile << line3 << endl;
+		outFile << line4 << endl;
+		outFile << line5 << endl;
+		outFile << line6 << endl;
+	}
+}
+
 void printCalendar(int month, int year) {
-	string line1, line2, line3, line4, line5, line6;
+	line1 = "";
+	line2 = "";
+	line3 = "";
+	line4 = "";
+	line5 = "";
+	line6 = "";
+
 	string str = MONTHS[month - 1];
 	int firstDay = dayOfWeek(month, 1, year);
 	int offset = 0;
@@ -126,7 +175,6 @@ void printCalendar(int month, int year) {
 	char lastDaySecond = (lastDay % 10) + 48;
 	char last = 0;
 	char curr = 0;
-
 	
 	switch (firstDay) {
 	case 0: // SATURDAY
@@ -166,7 +214,6 @@ void printCalendar(int month, int year) {
 		if (j == 0) {
 			for (int i = firstDay; i <= lastPoint; i++) {
 				line1 += calendar[j][i];
-				
 			}
 		}
 		else if (j == 1) {
@@ -202,6 +249,7 @@ void printCalendar(int month, int year) {
 		}
 	}
 	
+	
 	printf("%-.21s\n", line1.c_str());
 	printf("%-.21s\n", line2.c_str());
 	printf("%-.21s\n", line3.c_str());
@@ -209,5 +257,6 @@ void printCalendar(int month, int year) {
 	printf("%-.21s\n", line5.c_str());
 	printf("%-.21s\n", line6.c_str());
 
+	output(file, month, year);
 }
 
